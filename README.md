@@ -35,6 +35,24 @@ let g:blade_custom_directives_pairs = {
       \ }
 ```
 
+Troubleshooting
+-------------
+**I've installed the plugin, but my files aren't formatting correctly!**
+
+If you have installed `vim-blade` as a standalone plugin instead of as a part of the `vim-polyglot` bundle, then you
+may need to include the following Lua snippet in your Vim configuration somewhere that will be run on load. This
+snippet sets up a group to change the filetype of Blade files to specifically "blade" when the buffer is read.
+
+```lua
+vim.cmd [[
+    augroup blade_settings
+      autocmd!
+      autocmd BufRead,BufNewFile *.blade.php set filetype=blade
+    augroup end
+  ]]
+
+```
+
 Contributing
 ------------
 
