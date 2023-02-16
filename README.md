@@ -58,7 +58,3 @@ vim.cmd [[
 ## Contributing
 
 Pull requests are greatly appreciated. Please be certain to include a test where applicable (`test.blade.php`). You may test locally by using `vim -u vimrc`.
-
-## Want to buy me a coffee?
-
-[![Flattr this git repo](http://api.flattr.com/button/flattr-badge-large.png)](https://flattr.com/submit/auto?user_id=jwalton512&url=https://github.com/jwalton512/vim-blade&title=vim-blade&language=vimscript&tags=github&category=software)
