@@ -42,6 +42,14 @@ function! s:IsStartingDelimiter(lnum)
                 \ || line =~# '<?\%(.*?>\)\@!'
 endfunction
 
+function! s:IsEndingDelimiter(lnum)
+    let cline = getline(v:lnum)
+    return cline =~# '^\s*@\%(' . s:directives_end . '\)'
+                \ || cline =~# '\%(<?.*\)\@<!?>'
+                \ || cline =~# '\%({{.*\)\@<!}}'
+                \ || cline =~# '\%({!!.*\)\@<!!!}'
+endfunction
+
 function! GetBladeIndent()
     let lnum = prevnonblank(v:lnum - 1)
     if lnum == 0
@@ -62,11 +70,28 @@ function! GetBladeIndent()
 
     " 2. When the current line is an ending delimiter: decrease indentation
     "    if the previous line wasn't a starting delimiter.
-    if cline =~# '^\s*@\%(' . s:directives_end . '\)'
-                \ || cline =~# '\%(<?.*\)\@<!?>'
-                \ || cline =~# '\%({{.*\)\@<!}}'
-                \ || cline =~# '\%({!!.*\)\@<!!!}'
+    if s:IsEndingDelimiter(lnum)
+        if line =~ '\/>$'
+            return indent - &sw
+        endif
         return s:IsStartingDelimiter(lnum) ? indent : indent - &sw
+    endif
+
+    " Check if current line is a self closing tag
+    " If self closing tag is in one line, keep indent
+    if cline =~ '\/>$'
+        if s:IsStartingDelimiter(lnum)
+            return indent + &sw
+        elseif cline =~ '^\s*<'
+            return indent
+        else
+            return indent - &sw
+        endif
+    endif
+
+    " Check to keep indent after self closing tag
+    if (line =~ '\/>$' && cline !~ '^\s*<\/')
+        return indent
     endif
 
     " 3. Increase indentation if the line contains a starting delimiter.
